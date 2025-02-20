@@ -1,0 +1,52 @@
+import axios from "axios";
+import graphql, { GraphQLInt } from "graphql";
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema } = graphql;
+
+const CompanyType = new GraphQLObjectType({
+  name: "Company",
+  fields: {
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+  },
+});
+
+const UserType = new GraphQLObjectType({
+  name: "User",
+  fields: {
+    id: { type: GraphQLID },
+    firstName: { type: GraphQLString },
+    age: { type: GraphQLInt },
+    company: {
+      type: CompanyType,
+      async resolve(parentValue, args) {
+        console.log(parentValue, args);
+        const { data } = await axios.get(
+          `http://localhost:3000/companies/${parentValue.companyId}`
+        );
+        return data;
+      },
+    },
+  },
+});
+
+const RootQuery = new GraphQLObjectType({
+  name: "RootQueryType",
+  fields: {
+    user: {
+      type: UserType,
+      args: { id: { type: GraphQLString } },
+      async resolve(parentValue, args) {
+        const { data } = await axios.get(
+          `http://localhost:3000/users/${args.id}`
+        );
+        return data;
+      },
+    },
+  },
+});
+
+const schema = new GraphQLSchema({
+  query: RootQuery,
+});
+export default schema;
