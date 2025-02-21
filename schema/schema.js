@@ -1,14 +1,30 @@
 import axios from "axios";
-import graphql, { GraphQLInt } from "graphql";
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema } = graphql;
+import {
+  GraphQLObjectType,
+  GraphQLID,
+  GraphQLString,
+  GraphQLSchema,
+  GraphQLList,
+  GraphQLInt,
+} from "graphql";
 
 const CompanyType = new GraphQLObjectType({
   name: "Company",
-  fields: {
+  fields: () => ({
     id: { type: GraphQLString },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
-  },
+    users: {
+      type: new GraphQLList(UserType),
+      async resolve(parentValue, args) {
+        console.log(parentValue, args);
+        const { data } = await axios.get(
+          `http://localhost:3000/companies/${parentValue.id}/users`
+        );
+        return data;
+      },
+    },
+  }),
 });
 
 const UserType = new GraphQLObjectType({
@@ -35,10 +51,22 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     user: {
       type: UserType,
-      args: { id: { type: GraphQLString } },
+      args: {
+        id: { type: GraphQLString },
+      },
       async resolve(parentValue, args) {
         const { data } = await axios.get(
           `http://localhost:3000/users/${args.id}`
+        );
+        return data;
+      },
+    },
+    company: {
+      type: CompanyType,
+      args: { id: { type: GraphQLString } },
+      async resolve(parentValue, args) {
+        const { data } = await axios.get(
+          `http://localhost:3000/companies/${args.id}`
         );
         return data;
       },
