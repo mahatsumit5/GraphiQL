@@ -19,15 +19,10 @@
       "companyId": "2"
     },
     {
-      "id": "20",
+      "id": "db3d",
       "firstName": "Sarah",
-      "age": 25,
-      "companyId": "3"
-    },
-    {
-      "id": "09de",
-      "firstName": "Steven",
-      "age": 26
+      "age": 35,
+      "companyId": "1"
     }
   ],
   "companies": [
