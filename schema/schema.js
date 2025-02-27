@@ -116,10 +116,10 @@ const mutation = new GraphQLObjectType({
         companyId: { type: GraphQLString },
       },
       async resolve(parent, { id, ...rest }) {
-        const { data } = await axios.put(`http://localhost:3000/users/${id}`, {
-          id,
-          ...rest,
-        });
+        const { data } = await axios.patch(
+          `http://localhost:3000/users/${id}`,
+          rest
+        );
         return data;
       },
     },

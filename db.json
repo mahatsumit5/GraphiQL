@@ -21,8 +21,7 @@
     {
       "id": "db3d",
       "firstName": "Sarah",
-      "age": 35,
-      "companyId": "1"
+      "age": 35
     }
   ],
   "companies": [
